@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { getContatos, salvarContatos } from '../storage';
+import { getContatos, salvarContatos } from '../../storage';
 
 function gerarId() {
   return Date.now().toString();

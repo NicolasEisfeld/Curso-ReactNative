@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getContatos, salvarContatos } from '../storage';
+import { getContatos, salvarContatos } from '../../storage';
 
 
 export default function Index({ navigation, route }) {

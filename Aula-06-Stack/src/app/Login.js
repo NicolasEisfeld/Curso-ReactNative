@@ -1,32 +1,24 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, Platform, StyleSheet } from 'react-native';
-import { salvarUsuario } from '../storage';
+import { logarUsuario } from '../../storage';
 
-export default function Cadastro({ navigation }) {  
-  const [nome, setNome] = useState('');
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [confirmarSenha, setConfirmarSenha] = useState('');
 
-  async function cadastrarUsuario() {
-    if (!nome.trim() || !email.trim() || !senha) {
-      mostrarMensagem("Preencha todos os campos");
-      return;
-    }
-    if (senha !== confirmarSenha) {
-      mostrarMensagem("As senhas tem que ser iguais");
+  async function fazerLogin() {
+    if (!email.trim() || !senha) {
+      mostrarMensagem("Preencha email e senha");
       return;
     }
     try {
-      await salvarUsuario({
-        nome: nome.trim(),
-        email: email.trim().toLowerCase(),
-        password: senha,
+      const usuario = await logarUsuario(email.trim().toLowerCase(), senha);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main', params: { usuarioEmail: usuario.email, usuarioName: usuario.nome } }],
       });
-      mostrarMensagem("Conta criada com sucesso, acesse a página de login")
-      navigation.navigate('Login')
     } catch (error) {
-      mostrarMensagem("Erro ao criar a conta. Tente Novamente")
+      mostrarMensagem("Erro ao tentar fazer login, tente novamente");
     }
   }
 
@@ -38,18 +30,15 @@ export default function Cadastro({ navigation }) {
     }
   };
 
-
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Cadastro</Text>
-        <TextInput style={styles.input} placeholder="Nome" value={nome} onChangeText={setNome} />
+        <Text style={styles.title}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
           keyboardType="email-address"
         />
         <TextInput
@@ -59,19 +48,12 @@ export default function Cadastro({ navigation }) {
           onChangeText={setSenha}
           secureTextEntry
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirmar Senha"
-          value={confirmarSenha}
-          onChangeText={setConfirmarSenha}
-          secureTextEntry
-        />
         <View style={styles.buttonContainer}>
-          <Button title="Cadastrar" onPress={cadastrarUsuario} />
+          <Button title="Entrar" onPress={fazerLogin} />
         </View>
         <View style={styles.spacer} />
         <View style={styles.buttonContainer}>
-          <Button title="Voltar ao Login" onPress={() => navigation.navigate('Login')} />
+          <Button title="Criar conta" onPress={() => navigation.navigate('Cadastro')} />
         </View>
       </View>
     </View>
